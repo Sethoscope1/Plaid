@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<script src="jquery-1.10.2.min.js"></script>
+	<link rel="stylesheet" href="style.css"></link>
+</head>
+
+<body>
+	
+	<header>
+		<h1>ACADEMY PLAID</h1>
+		
+		<hr>
+		<hr>
+
+		<div>
+			<img src="plaiderator.jpg" width="392" height="504" alt="Plaiderator" id="logo">
+		</div>
+		<h3>The plaid you were meant to be</h3>
+	</header>
+	
+	<section id="plaid-wrapper">
+		<div id="plaid"></div>
+		
+		<div><button id="generate">Enroll!</button></div>
+		<div><button id="copy">Get CSS</button></div>
+	</section>
+
+	<div id="css"></div>
+	
+</body>
+
+</html>
+
+<script>
+var $plaid = $("#plaid");
+var $css= $("#css");
+
+var Plaid = {
+    
+  genHexColor: function() {
+  	return "#" + (Math.floor((Math.random() * 16777215)).toString(16));
+  },
+  
+  genR: function() {
+  	return Math.floor(Math.random() * 256);
+  },
+  
+  genOpacity: function() {
+  	return Math.floor(Math.random() * 10) / 10;    
+  },
+      
+  genRGBA: function() {
+    return "rgba(" +
+        this.genR() + ", " +
+        this.genR() + ", " +
+        this.genR() + ", " +
+        this.genOpacity() +
+        ")";
+          
+  }, 
+  
+  genGrad: function(direction) {
+		var color1 = this.genRGBA();
+		var color2 = this.genRGBA();
+		var color3 = this.genRGBA();
+		return "linear-gradient(to " + direction + ",\n" +
+			color1 + " 0%,\n" +
+			color1 + " 40%,\n" +
+			color2 + " 41%,\n" +
+			color2 + " 60%,\n" +
+			color3 + " 61%,\n" +
+			color3 + " 70%,\n" +
+			color2 + " 71%,\n" +
+			color2 + " 90%,\n" +
+			color3 + " 91%,\n" +
+			color3 + " 100%)" ;
+  },
+ 
+  genCSS: function() {
+		return this.genGrad("bottom") + ", " + this.genGrad("left");
+  }
+   
+}
+
+var refresh = function() {
+	$plaid.css("background-color", Plaid.genHexColor());
+	$plaid.css("background-image", Plaid.genCSS());
+	// $css.html(Plaid.genCSS());
+}
+
+refresh();
+
+$("#generate").on("click", function() {
+	refresh();
+})
+
+$("#copy").on("click", function() {
+	console.log("hi");
+	console.log($css.html());
+})
+
+
+</script>
+
