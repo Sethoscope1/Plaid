@@ -27,34 +27,45 @@
 			<section id="controls-wrapper">
 	
 				<section id="controls-group">
-	
-					<div id="swatch"></div>
 					
-					<nav id="sliders">
-						
-						<input type="range" min="0" max="255" id="r-slider" class="red">
-						<label>red</label>
-						<br>
-						
-						<input type="range" min="0" max="255" id="g-slider" class="green">
-						<label>green</label>
-						<br>
-						
-						<input type="range" min="0" max="255" id="b-slider" class="blue">
-						<label>blue</label>
-						<br>
+					<section id="color-controls">
 					
-						<input type="range" min="0" max="1" step="0.01" id="a-slider" class="opacity">
-						<label>opacity</label>
-						<br>	
-						
-					</nav>
-						
-					<div><button id="generate">Random!</button></div>
-					<div><button id="copy">Get CSS</button></div>
+						<div id="swatch"></div>
 					
+						<nav id="sliders">
+						
+							<input type="range" min="0" max="255" id="r-slider" class="red">
+							<label>red</label>
+							<br>
+						
+							<input type="range" min="0" max="255" id="g-slider" class="green">
+							<label>green</label>
+							<br>
+						
+							<input type="range" min="0" max="255" id="b-slider" class="blue">
+							<label>blue</label>
+							<br>
+					
+							<input type="range" min="0" max="1" step="0.01" id="a-slider" class="opacity">
+							<label>opacity</label>
+							<br>	
+						
+						</nav>
+						
+						<div class="center"><button id="generate">Randomize!</button></div>
+						
+					</section>
 
-					<div id="css"></div>
+					<section id="css-controls">
+						
+						<div class="center"><h3>CSS</h3></div>
+
+						<div id="css"></div>
+
+						<div class="center"><button id="copy">Generate CSS</button></div>
+						
+					</section>
+
 
 					
 				</section>
@@ -241,7 +252,6 @@ refresh();
 
 $("input[type='range']").on("change", function() {
 	$swatch.css("background-color", "#ABC");
-	console.log($rSlider.val());
 	currentColor = plaidMain.getRGBA($rSlider.val(), $gSlider.val(), $bSlider.val(), $aSlider.val())
 	$swatch.css("background-color", currentColor);
 	currentElem.css("background-color", plaidMain.getRGBA($rSlider.val(), $gSlider.val(), $bSlider.val(), $aSlider.val()));
@@ -279,18 +289,19 @@ $bg.on("click", function() {
 
 $(".small-swatch").on("click", function() {
 	currentElem = $(this);
+
 	var backgroundColor = currentElem.css("background-color");
-	var RGBA = backgroundColor.match(/\d+\.*\d*/g);
-	$swatch.css("background-color", backgroundColor);
+	var RGBA = backgroundColor.match(/\d+\.*\d/g)
 	
+	console.log("bg: " + backgroundColor);
+	console.log("RGBA: " + RGBA);
+	console.log("type " + typeof RGBA);
+
+	$swatch.css("background-color", backgroundColor);
 	$rSlider.val(RGBA[0]);
 	$gSlider.val(RGBA[1]);
 	$bSlider.val(RGBA[2]);
 	$aSlider.val(RGBA[3]);	
-	
-	console.log(RGBA);
-	// console.log(currentElem.css("background-color"));
-	// console.log(currentElem.css("background-color").match(/\d+/g));
 })
 
 // 
@@ -305,8 +316,8 @@ $("#generate").on("click", function() {
 })
 
 $("#copy").on("click", function() {
-	console.log("hi");
-	console.log($css.html());
+	
+	$css.html("background-image: " + $plaid.css("background-image") + ";\nbackground-color: " + $plaid.css("background-color") + ";");
 })
 
 
