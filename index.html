@@ -8,7 +8,6 @@
 </head>
 
 <body>
-	
 	<header>
 		<h1>ACADEMY PLAID</h1>
 		
@@ -21,38 +20,115 @@
 		<h3>The plaid you were meant to be</h3>
 	</header>
 	
-	<section id="plaid-wrapper">
-		<div id="plaid"></div>
-		
-		<div><button id="generate">Enroll!</button></div>
-		<div><button id="copy">Get CSS</button></div>
-	</section>
+	<section id="main-wrapper">
 
-	<div id="css"></div>
+		<section id="main" class="group">
+
+			<section id="controls-wrapper">
 	
-</body>
+				<section id="controls-group">
+	
+					<div id="swatch"></div>
+					
+					<nav id="sliders">
+						
+						<input type="range" min="0" max="255" id="r-slider" class="red">
+						<label>red</label>
+						<br>
+						
+						<input type="range" min="0" max="255" id="g-slider" class="green">
+						<label>green</label>
+						<br>
+						
+						<input type="range" min="0" max="255" id="b-slider" class="blue">
+						<label>blue</label>
+						<br>
+					
+						<input type="range" min="0" max="1" step="0.01" id="a-slider" class="opacity">
+						<label>opacity</label>
+						<br>	
+						
+					</nav>
+						
+					<div><button id="generate">Random!</button></div>
+					<div><button id="copy">Get CSS</button></div>
+					
 
+					<div id="css"></div>
+
+					
+				</section>
+	
+			</section>
+			
+			<section id="plaid-wrapper">
+				<div id="top-swatches">
+					<div class="wrapper"><div id="t1" class="small-swatch"></div></div>
+					<div class="wrapper"><div id="t2" class="small-swatch"></div></div>
+					<div class="wrapper"><div id="t3" class="small-swatch"></div></div>
+				</div>
+				<div id="top"></div>
+			
+				<div id="left-swatches">
+					<div class="wrapper"><div id="l1" class="small-swatch"></div></div>
+					<div class="wrapper"><div id="l2" class="small-swatch"></div></div>
+					<div class="wrapper"><div id="l3" class="small-swatch"></div></div>
+				</div>
+				<div id="left"></div>
+				<div id="display">
+					<div id="plaid"></div>
+					
+					<div id="bg" class="small-swatch">
+				</div>
+			</section>		
+
+		</section>
+	
+	</section>
+	 
+</body>
+	
 </html>
 
 <script>
-var $plaid = $("#plaid");
-var $css= $("#css");
 
-var Plaid = {
-    
-  genHexColor: function() {
+var $top = $("#top");
+var $left = $("#left")
+var $plaid = $("#plaid");
+var $display = $("#display");
+var $css = $("#css");
+
+var $t1 = $("#t1");
+var $t2 = $("#t2");
+var $t3 = $("#t3");
+
+var $l1 = $("#l1");
+var $l2 = $("#l2");
+var $l3 = $("#l3");
+
+var $bg = $("#bg");
+
+var $rSlider = $("#r-slider");
+var $gSlider = $("#g-slider");
+var $bSlider = $("#b-slider");
+var $aSlider = $("#a-slider");
+var $swatch = $("#swatch");
+
+function Plaid() {
+		
+  this.genHexColor = function() {
   	return "#" + (Math.floor((Math.random() * 16777215)).toString(16));
   },
   
-  genR: function() {
+  this.genR = function() {
   	return Math.floor(Math.random() * 256);
   },
   
-  genOpacity: function() {
+  this.genOpacity = function() {
   	return Math.floor(Math.random() * 10) / 10;    
   },
       
-  genRGBA: function() {
+  this.genRGBA = function() {
     return "rgba(" +
         this.genR() + ", " +
         this.genR() + ", " +
@@ -61,11 +137,20 @@ var Plaid = {
         ")";
           
   }, 
+	
+	this.getRGBA = function(r, g, b, a) {
+    return "rgba(" +
+        r + ", " +
+        g + ", " +
+        b + ", " +
+        a +
+        ")";
+	},
   
-  genGrad: function(direction) {
-		var color1 = this.genRGBA();
-		var color2 = this.genRGBA();
-		var color3 = this.genRGBA();
+  this.genGrad = function(direction, color1, color2, color3) {
+		var color1 = color1;
+		var color2 = color2;
+		var color3 = color3;
 		return "linear-gradient(to " + direction + ",\n" +
 			color1 + " 0%,\n" +
 			color1 + " 40%,\n" +
@@ -78,22 +163,144 @@ var Plaid = {
 			color3 + " 91%,\n" +
 			color3 + " 100%)" ;
   },
+	
+	this.genTop = function() {
+		return this.genGrad("top", this.colorTop1, this.colorTop2, this.colorTop3);
+	}
+	
+	this.genLeft = function() {
+		return this.genGrad("left", this.colorLeft1, this.colorLeft2, this.colorLeft3);
+	}
  
-  genCSS: function() {
-		return this.genGrad("bottom") + ", " + this.genGrad("left");
-  }
-   
+  this.genCSS = function() {
+		return this.genGrad("top", this.colorTop1, this.colorTop2, this.colorTop3) + ", " + this.genGrad("left", this.colorLeft1, this.colorLeft2, this.colorLeft3);
+  },
+	
+	this.reset = function() {
+		this.colorBG = this.genHexColor();
+	
+		this.colorTop1 = this.genRGBA();
+		this.colorTop2 = this.genRGBA();
+		this.colorTop3 = this.genRGBA();
+	
+		this.topGrad = this.genTop();
+	
+		this.colorLeft1 = this.genRGBA();
+		this.colorLeft2 = this.genRGBA();
+		this.colorLeft3 = this.genRGBA();
+	
+		this.leftGrad = this.genLeft();
+		
+	},
+	
+	this.reset();
 }
 
+var currentElem = null;
+var currentVal = null;
+
+var currentR = 127;
+var currentG = 127;
+var currentB = 127; 
+var currentA = 0.5;
+
+var parseCurrentColor = function() {
+	
+}
+
+var currentColor = "rgba(127, 127, 127, 0.5)";
+
+var currentElem = null;
+
+var currentVal = null;
+
+var plaidMain = new Plaid();
+
 var refresh = function() {
-	$plaid.css("background-color", Plaid.genHexColor());
-	$plaid.css("background-image", Plaid.genCSS());
-	// $css.html(Plaid.genCSS());
+	$plaid.css("background-color", plaidMain.colorBG);
+	$plaid.css("background-image", plaidMain.genCSS());
+	$top.css("background-image", plaidMain.genLeft());
+	$left.css("background-image", plaidMain.genTop());
+	$display.css("background-color", plaidMain.colorBG);
+	
+	$swatch.css("background-color", currentColor);
+
+	$t1.css("background-color", plaidMain.colorLeft3);
+	$t2.css("background-color", plaidMain.colorLeft2);
+	$t3.css("background-color", plaidMain.colorLeft1);
+	
+	$l1.css("background-color", plaidMain.colorTop3);
+	$l2.css("background-color", plaidMain.colorTop2);
+	$l3.css("background-color", plaidMain.colorTop1);		
+	
+	$bg.css("background-color", plaidMain.colorBG);
+
 }
 
 refresh();
 
+$("input[type='range']").on("change", function() {
+	$swatch.css("background-color", "#ABC");
+	console.log($rSlider.val());
+	currentColor = plaidMain.getRGBA($rSlider.val(), $gSlider.val(), $bSlider.val(), $aSlider.val())
+	$swatch.css("background-color", currentColor);
+	currentElem.css("background-color", plaidMain.getRGBA($rSlider.val(), $gSlider.val(), $bSlider.val(), $aSlider.val()));
+	plaidMain[currentVal] = plaidMain.getRGBA($rSlider.val(), $gSlider.val(), $bSlider.val(), $aSlider.val());
+	refresh();
+})
+
+$t1.on("click", function() {
+	currentVal = "colorLeft3"
+})
+
+$t2.on("click", function() {
+	currentVal = "colorLeft2"
+})
+
+$t3.on("click", function() {
+	currentVal = "colorLeft1"
+})
+
+$l1.on("click", function() {
+	currentVal = "colorTop3"
+})
+
+$l2.on("click", function() {
+	currentVal = "colorTop2"
+})
+
+$l3.on("click", function() {
+	currentVal = "colorTop1"
+})
+
+$bg.on("click", function() {
+	currentVal = "colorBG"
+})
+
+$(".small-swatch").on("click", function() {
+	currentElem = $(this);
+	var backgroundColor = currentElem.css("background-color");
+	var RGBA = backgroundColor.match(/\d+\.*\d*/g);
+	$swatch.css("background-color", backgroundColor);
+	
+	$rSlider.val(RGBA[0]);
+	$gSlider.val(RGBA[1]);
+	$bSlider.val(RGBA[2]);
+	$aSlider.val(RGBA[3]);	
+	
+	console.log(RGBA);
+	// console.log(currentElem.css("background-color"));
+	// console.log(currentElem.css("background-color").match(/\d+/g));
+})
+
+// 
+// $rSlider.on("change", function() {
+// 	var that = this;
+// 	refresh();
+// })
+
 $("#generate").on("click", function() {
+	plaidMain.reset();
 	refresh();
 })
 
